@@ -3,6 +3,7 @@ from robocorp import browser
 
 from RPA.HTTP import HTTP
 from RPA.Tables import Tables
+from RPA.PDF import PDF
 
 
 @task
@@ -62,6 +63,9 @@ def place_order(order: dict):
     while not successfully_orderded:
         page.click("#order")
         successfully_orderded = page.is_visible("#order-another")
+    receipt_path = store_receipt_as_pdf(order["Order number"])
+    robot_image_path = screenshot_robot(order["Order number"])
+    embed_screenshot_to_receipt(robot_image_path, receipt_path)
     page.click("#order-another")
 
 
@@ -76,3 +80,31 @@ def fill_order_form(order: dict):
         order["Legs"],
     )
     page.fill("#address", order["Address"])
+
+
+def store_receipt_as_pdf(order_number: str) -> str:
+    """Store the receipt as a PDF file"""
+    page = browser.page()
+    receipt_html = page.locator("#receipt").inner_html()
+    pdf = PDF()
+    receipt_path = f"output/receipts/receipt-{order_number}.pdf"
+    pdf.html_to_pdf(receipt_html, receipt_path)
+    return receipt_path
+
+
+def screenshot_robot(order_number: str) -> str:
+    """Takes a screenshot of the robot and stores it as a PNG file"""
+    page = browser.page()
+    robot_image_path = f"output/images/robot-{order_number}.png"
+    page.locator("#robot-preview-image").screenshot(path=robot_image_path)
+    return robot_image_path
+
+
+def embed_screenshot_to_receipt(screenshot: str, pdf_file: str):
+    """Embed the screenshot to the receipt"""
+    pdf = PDF()
+    pdf.add_watermark_image_to_pdf(
+        image_path=screenshot,
+        source_path=pdf_file,
+        output_path=pdf_file,
+    )
