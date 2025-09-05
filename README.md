@@ -1,3 +1,37 @@
+﻿# Orders Robot - RobotSpareBin Industries
+
+This robot automates the process of ordering robots from RobotSpareBin Industries Inc. It processes orders from a CSV file, fills out order forms on the website, generates receipts, and creates a comprehensive archive of all transactions.
+
+[Automation Certification Level II: Build a robot](https://sema4.ai/docs/automation/courses/build-a-robot-python)
+
+## What This Robot Does
+
+ **Automated Order Processing**: Downloads order data from a CSV file and processes each order automatically
+
+ **Form Automation**: Fills out robot order forms with:
+- Head selection
+- Body type selection  
+- Leg part numbers
+- Delivery addresses
+
+ **Receipt Generation**: Creates PDF receipts for each order with embedded robot screenshots
+
+ **Archive Creation**: Compiles all receipts into a ZIP archive for easy storage and retrieval
+
+## Robot Workflow
+
+1. **Download Orders**: Fetches the latest orders from https://robotsparebinindustries.com/orders.csv
+2. **Open Website**: Navigates to the robot order website
+3. **Process Each Order**:
+   - Closes any modal dialogs
+   - Fills out the order form with customer data
+   - Previews and submits the order
+   - Retries if order fails
+   - Generates PDF receipt
+   - Takes screenshot of the ordered robot
+   - Embeds screenshot into the receipt
+4. **Create Archive**: Compiles all receipts into a ZIP file
+
 # Template: Python - Minimal
 
 This template leverages the new [Python framework](https://github.com/robocorp/robocorp), the [libraries](https://github.com/robocorp/robocorp/blob/master/docs/README.md#python-libraries) from to same project as well.
@@ -20,6 +54,37 @@ The template provides you with the basic structure of a Python project: logging 
 ## Results
 
 🚀 After running the bot, check out the `log.html` under the `output` -folder.
+
+## Pushing to Robocorp Cloud
+
+### Prerequisites
+1. **RCC installed** and configured
+2. **Robocorp account** with access to Control Room
+3. **Workspace** created in Robocorp Control Room
+
+### Step 1: Configure RCC Credentials
+```bash
+rcc configure credentials YOUR_CREDENTIALS_HERE
+```
+
+Get your credentials from Control Room  User Settings  Access Credentials
+
+### Step 2: Find Your Workspace ID
+```bash
+rcc cloud workspace
+```
+
+### Step 3: Create Robot in Workspace (if needed)
+```bash
+rcc cloud new -r orders-robot -w YOUR_WORKSPACE_ID
+```
+
+This will return the robot identity, which is used in the next step.
+
+### Step 4: Upload Your Robot
+```bash
+rcc cloud push -r YOUR_ROBOT_ID -w YOUR_WORKSPACE_ID
+```
 
 ## Dependencies
 
